@@ -1,0 +1,76 @@
+{
+    "features": [
+        {
+            "id": "f88683bd-fbfe-403c-83c3-f014abeb67a9",
+            "inputs": [
+            ],
+            "name": "Rectangle",
+            "suppressed": false,
+            "type": "rectangle",
+            "values": {
+                "depth": "60",
+                "width": "120",
+                "x": "0",
+                "y": "0",
+                "z": "0"
+            }
+        },
+        {
+            "id": "51e8f523-4ae1-4def-8256-0c918ed1d0b6",
+            "inputs": [
+                "f88683bd-fbfe-403c-83c3-f014abeb67a9"
+            ],
+            "name": "Extrude",
+            "suppressed": false,
+            "type": "extrude",
+            "values": {
+                "depth": "20"
+            }
+        },
+        {
+            "id": "e41cc7df-c452-46ba-9c1c-0b2758fd88c7",
+            "inputs": [
+                "51e8f523-4ae1-4def-8256-0c918ed1d0b6"
+            ],
+            "name": "Circle",
+            "suppressed": false,
+            "type": "circle",
+            "values": {
+                "radius": "5",
+                "x": "50",
+                "y": "30",
+                "z": "0"
+            }
+        },
+        {
+            "id": "f26afee9-a48d-4871-8145-22ebd77ec55f",
+            "inputs": [
+                "51e8f523-4ae1-4def-8256-0c918ed1d0b6",
+                "e41cc7df-c452-46ba-9c1c-0b2758fd88c7"
+            ],
+            "name": "Through cut",
+            "suppressed": false,
+            "type": "cut",
+            "values": {
+            }
+        },
+        {
+            "id": "42d76737-aa85-4a37-88df-9bb20cc2dba8",
+            "inputs": [
+                "f26afee9-a48d-4871-8145-22ebd77ec55f"
+            ],
+            "name": "All-edge fillet",
+            "suppressed": false,
+            "type": "fillet",
+            "values": {
+                "radius": "1"
+            }
+        }
+    ],
+    "format": "solidara",
+    "name": "Untitled",
+    "parameters": {
+    },
+    "units": "mm",
+    "version": 1
+}

@@ -1,0 +1,27 @@
+set(app "${CMAKE_INSTALL_PREFIX}/bin/Solidara.exe")
+set(vcpkg_bin "@VCPKG_INSTALLED_DIR@/@VCPKG_TARGET_TRIPLET@/bin")
+file(GET_RUNTIME_DEPENDENCIES
+    EXECUTABLES "${app}"
+    DIRECTORIES "${vcpkg_bin}" "@CMAKE_CURRENT_BINARY_DIR@/${CMAKE_INSTALL_CONFIG_NAME}"
+    RESOLVED_DEPENDENCIES_VAR resolved
+    UNRESOLVED_DEPENDENCIES_VAR unresolved
+    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
+    POST_EXCLUDE_REGEXES ".*[Ww][Ii][Nn][Dd][Oo][Ww][Ss][/\\\\][Ss][Yy][Ss][Tt][Ee][Mm]32.*")
+if(unresolved)
+    message(FATAL_ERROR "Unresolved application dependencies: ${unresolved}")
+endif()
+foreach(dll IN LISTS resolved)
+    file(INSTALL "${dll}" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE SHARED_LIBRARY)
+endforeach()
+execute_process(COMMAND "@SOLIDARA_WINDEPLOYQT@"
+    --release --no-translations --no-system-d3d-compiler --no-opengl-sw --compiler-runtime
+    "${app}" RESULT_VARIABLE deploy_result)
+if(NOT deploy_result EQUAL 0)
+    message(FATAL_ERROR "windeployqt failed: ${deploy_result}")
+endif()
+file(GLOB package_copyrights "@VCPKG_INSTALLED_DIR@/@VCPKG_TARGET_TRIPLET@/share/*/copyright")
+foreach(notice IN LISTS package_copyrights)
+    get_filename_component(package_dir "${notice}" DIRECTORY)
+    get_filename_component(package_name "${package_dir}" NAME)
+    file(INSTALL "${notice}" DESTINATION "${CMAKE_INSTALL_PREFIX}/licenses/${package_name}")
+endforeach()

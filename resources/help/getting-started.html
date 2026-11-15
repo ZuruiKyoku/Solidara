@@ -1,0 +1,25 @@
+<html><body style="color:#e8eae8; font-family:sans-serif;">
+<h1 style="color:#d48d4b">Make your first part</h1>
+<p>Solidara 0.1 is an early offline CAD application. Every model operation runs on your computer using exact Open CASCADE boundary representations.</p>
+<h2>Rectangle → solid → printable part</h2>
+<ol><li>Choose <b>Rectangle</b>. Set width to 100 and depth to 60. X/Y/Z set the profile origin on a plane parallel to XY. Click <b>Finish profile</b>.</li>
+<li>With the rectangle selected, choose <b>Extrude</b>. Set depth to 20.</li>
+<li>Choose <b>Hole</b>. Enter radius 5, X 50, Y 30. It cuts through the final body from its upper XY plane.</li>
+<li>Optionally choose <b>Fillet all edges</b> with radius 1. This rounds all eligible edges; individual edge fillets are not supported.</li>
+<li>Select the rectangle in the model browser or feature history. Set width to 120 and click <b>Apply dimensions</b>. Downstream features regenerate.</li>
+<li>Save the editable project with Ctrl+S. Choose <b>Export STL</b> to create a binary mesh for printing, or File → Export STEP for exact CAD interchange.</li></ol>
+<h2>Dimensions and parameters</h2>
+<p>Rectangle profiles have fixed horizontal/vertical sides and exact width/depth. Circles have exact radius and center. These are dimensioned profile templates, not a general sketch constraint solver. Input is numeric; drawing with the mouse is not available yet.</p>
+<p>Dimensions accept millimeters (default), cm, m, in, arithmetic and named length parameters. Define <b>width = 120 mm</b> using Parameters, then set a dimension to <b>width / 2</b>. Unknown names, circular definitions and invalid geometry are rejected. The previous valid model remains intact.</p>
+<h2>Navigate and inspect</h2>
+<p>Right drag orbits, middle drag pans, and the wheel zooms. Press F to fit. Use the orientation cube or View menu for standard views. Left click selects geometry and hovering highlights it. Selecting an earlier feature displays that feature's geometry; exports always use the final body.</p>
+<p>The inspector reports axis-aligned bounds, volume and surface area. The default 220 × 220 × 250 mm fit message checks dimensions only and allows repositioning; it is not a wall-thickness or printability analysis.</p>
+<h2>History and files</h2>
+<p>Undo/redo applies to successful feature and parameter edits. Failed edits do not enter history. Right-click a feature to delete or suppress it; active dependent features prevent removal. Files use a versioned JSON .solidara container containing definitions and stable feature IDs, with atomic saving. Geometry is regenerated on open.</p>
+<h2>Current scope</h2>
+<p>Supported: one active document, XY-parallel rectangle/circle profiles, extrusion, box, cylinder, through-cuts, all-edge fillet, editable history, named length parameters, STL/STEP export, offline help and persistent panel layout.</p>
+<p>Not yet supported: freehand sketch tools, general geometric constraints, arbitrary face attachment, persistent face/edge references, independent multi-body editing, assembly, revolve/sweep/loft, mesh import, GUI STEP import, autosave/recovery, light theme or manufacturing toolpaths. Save regularly. This release has not yet been verified on Windows.</p>
+<h2>Keyboard shortcuts</h2>
+<p>Ctrl+N: new · Ctrl+O: open · Ctrl+S: save · Ctrl+Shift+S: save as · Ctrl+Z: undo · platform redo shortcut: redo · F: fit · F1: help.</p>
+<p>All help, settings and project files remain local. No account, telemetry, license server or runtime network connection is used.</p>
+</body></html>

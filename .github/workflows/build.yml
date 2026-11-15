@@ -1,0 +1,66 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    container: debian:trixie
+    steps:
+      - name: Install build and GUI test dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates cmake ninja-build g++ qt6-base-dev libocct-data-exchange-dev libocct-visualization-dev libtbb-dev libfontconfig-dev xvfb xauth libgl1-mesa-dri fonts-dejavu-core
+      - uses: actions/checkout@v4
+      - run: cmake --preset linux-debug
+      - run: cmake --build --preset linux-debug
+      - run: ctest --preset linux-debug
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Solidara-linux-test-results
+          path: |
+            build/linux-debug/Testing/Temporary/LastTest.log
+            build/linux-debug/smoke-test*
+
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 180
+    env:
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.vcpkg-cache,readwrite
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: .vcpkg-cache
+          key: windows-x64-${{ hashFiles('vcpkg.json') }}
+      - name: Bootstrap pinned vcpkg
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'solidara-vcpkg'
+          git clone --filter=blob:none https://github.com/microsoft/vcpkg.git $root
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          git -C $root checkout ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & "$root/bootstrap-vcpkg.bat" -disableMetrics
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          "VCPKG_ROOT=$root" >> $env:GITHUB_ENV
+      - name: Configure
+        run: cmake --preset windows-release
+      - name: Build
+        run: cmake --build --preset windows-release
+      - name: Test
+        run: ctest --preset windows-release
+      - name: Package portable application
+        run: cpack --config build/windows-release/CPackConfig.cmake -C Release -B build/packages
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Solidara-windows-x64
+          path: build/packages/*.zip
+          if-no-files-found: error
