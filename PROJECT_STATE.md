@@ -41,7 +41,13 @@ GUI smoke: rectangle100×60 → extrusion20 → circular hole → all-edge fille
 
 Branch: `feature/parametric-modeling`. The base checkout originally contained only README.md. Commits use repository-local identity ZuruiKyoku <30306568+ZuruiKyoku@users.noreply.github.com>. Build outputs and dependency archives are excluded from Git.
 
-GitHub read access through the existing Git proxy was verified. GitHub API calls return Forbidden in this environment; that does not establish missing Git push permission. Delivery status is recorded after pushing below.
+Implementation commit: `bdbe0eb` (`Add offline parametric CAD modeling workflow`). Both author and committer match the required identity.
+
+GitHub read access through the existing Git proxy was verified. The actual push of `feature/parametric-modeling` was rejected with HTTP 403: permission to ZuruiKyoku/Solidara.git denied. GitHub API access also returns Forbidden, so no pull request was created and remote CI was not triggered. The implementation and delivery documentation are committed locally; no default branch or remote history was changed.
+
+A Git bundle is provided outside the checkout at `/workspace/Solidara-delivery.bundle` for transfer. With appropriate GitHub write access, push `feature/parametric-modeling` and open a PR against main. Review the Windows CI results before claiming a Windows release.
+
+The cloud environment draft has saved installation and startup instructions. Publication is a separate user action. A restored future task has not been verified, and local-only commit restoration through environment snapshots is not guaranteed; retain the Git bundle or push the branch before relying on snapshot restoration.
 
 ## Next development priorities
 
