@@ -37,9 +37,15 @@ Core suite: 38 QtTest results (36 substantive cases, init and cleanup), 0 failur
 
 GUI smoke: rectangle100×60 → extrusion20 → circular hole → all-edge fillet → inspector width120 → undo100 → redo120 → native save/reopen → STL/STEP export. Artifacts are generated in `build/linux-debug/smoke-test` and `smoke-test-offline`. These are Linux evidence only. Viewport suite: 7 QtTest results (5 scenarios, init and cleanup), 0 failures/skips. It exercises native rendering, mouse body/face selection, orbit/pan/zoom, orientation cube, model/display shape isolation and resizing inside a docked main window. Final CTest result: 5/5 suites passed. An additional installed-layout smoke run with packaged OCCT resources and blocked IPv4/IPv6 sockets also passed; Linux runtime libraries were supplied by the development environment, so this does not prove portable deployment. The committed screenshot and example project come from the passing GUI smoke run.
 
+## Visual Studio entry point
+
+`Solidara.sln` and `Solidara.vcxproj` now provide a portable repository-root entry point for VS 2026. Build/Run delegates to CMake through a PowerShell script, preparing an isolated pinned vcpkg checkout under local application data instead of requiring manual setup. Debug/Release, Rebuild and download-free Clean are supported. Application build definitions remain in CMake; generated files live under `build/visual-studio`.
+
+Validation: the solution/project XML, project identity, source paths and configuration mappings were checked; PowerShell 7.5.4 on Linux passed 15 build-helper cases with one Windows-only Clean case explicitly skipped. The script uses Windows PowerShell 5.1-compatible syntax, with those checks added to Windows CI. The existing application rebuilt successfully and all 5 CTest suites passed. Windows SDK/MSVC execution and IDE F5 behavior cannot be verified on this Linux machine. Follow the Windows CI results and local Build Output rather than treating script checks as a successful Windows application build.
+
 ## Development and delivery
 
-Branch: `feature/parametric-modeling`. The base checkout originally contained only README.md. Commits use repository-local identity ZuruiKyoku <30306568+ZuruiKyoku@users.noreply.github.com>. Build outputs and dependency archives are excluded from Git.
+The initial implementation was delivered on `feature/parametric-modeling` and merged into `main` through PRs #1 and #2. The checked-in Visual Studio solution is being delivered on `main` at the user's explicit request. The base checkout originally contained only README.md. Commits use repository-local identity ZuruiKyoku <30306568+ZuruiKyoku@users.noreply.github.com>. Build outputs and dependency archives are excluded from Git.
 
 Implementation commit: `bdbe0eb` (`Add offline parametric CAD modeling workflow`). Both author and committer match the required identity.
 

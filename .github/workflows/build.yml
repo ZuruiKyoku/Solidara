@@ -36,6 +36,9 @@ jobs:
       VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.vcpkg-cache,readwrite
     steps:
       - uses: actions/checkout@v4
+      - name: Validate Visual Studio build entry point
+        shell: powershell
+        run: ./tests/windows_build_tests.ps1
       - uses: actions/cache@v4
         with:
           path: .vcpkg-cache

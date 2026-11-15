@@ -20,6 +20,16 @@ No runtime accounts, network services, telemetry, or downloaded assets are used.
 
 ## Build and run
 
+### Open in Visual Studio 2026
+
+Install Visual Studio 2026 with **Desktop development with C++**, a Windows SDK and **C++ CMake tools for Windows**, plus Git for Windows. CMake 4.2 or newer is required (the build can also use CMake on PATH).
+
+Open **`Solidara.sln` in the repository root**, select **Release / x64**, and press **Ctrl+F5**. If prompted, set the Solidara project as the startup project. The first build automatically prepares pinned dependency tools and downloads/builds Qt and OCCT, so it requires internet access and can take substantial time. Follow progress in Visual Studio's Build Output window. Later application use is offline.
+
+The solution resolves paths relative to your checkout instead of embedding a developer's machine paths. It keeps generated files under `build/visual-studio` and uses `%LOCALAPPDATA%/Solidara/Tools` for its private vcpkg checkout; there is no need to set `VCPKG_ROOT` manually. The maintained build definition remains CMake. This IDE entry point has script-level checks, but actual execution in Visual Studio still requires Windows verification.
+
+### Command-line development
+
 On the Debian 13 x64 cloud environment, from this checkout:
 
 ```bash

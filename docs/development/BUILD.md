@@ -38,6 +38,14 @@ Choose the preset matching your installed Visual Studio version. Both require **
 
 ### Visual Studio 2026
 
+The simplest entry point is the checked-in **`Solidara.sln` at the repository root**. Open it in Visual Studio 2026, select Release/x64 and use Ctrl+F5. The Solidara project invokes `scripts/build-windows.ps1`, which locates CMake 4.2+ from Visual Studio or PATH, prepares an isolated pinned vcpkg checkout under `%LOCALAPPDATA%/Solidara/Tools`, then configures and builds the executable. Install Git for Windows and the Desktop development with C++ workload with a Windows SDK and C++ CMake tools before the first build. Restart Visual Studio after installing command-line tools so it sees the updated PATH.
+
+`Solidara.vcxproj` is a maintained Makefile project that delegates compilation to CMake. It does not contain absolute machine paths or duplicate dependency/linker settings. Debug and Release launch the actual executable under `build/visual-studio/<configuration>/Solidara.exe`. Source items are explicitly listed for safe IDE editing; add new files to the appropriate CMake target and the outer project's source list. CMake configures the inner solution in a different directory, so it cannot recurse into the launcher solution.
+
+Build configures dependencies on demand, Rebuild cleans application targets and rebuilds, and Clean only cleans an existing build without cloning tools or installing dependencies. Shared file locks prevent overlapping changes to the same build directory or tool checkout; close other builds if the lock cannot be acquired. The project disables the outer Visual Studio vcpkg integration and uses its own tooling root, keeping existing vcpkg installations untouched. The child PowerShell process uses a process-scoped execution-policy override to run the repository's build script; it does not change machine or user policy.
+
+The solution entry point does not require manually running the commands below. They remain available for command-line users and generate a separate solution under `build/windows-vs2026-release`.
+
 Use CMake **4.2 or newer**; this is the first version with the `Visual Studio 18 2026` generator. The `windows-vs2026-release` preset uses a separate build directory from VS 2022. The commands below install a pinned vcpkg checkout whose 2026-10-29 tool release recognizes VS 2026 and its v145 toolset. The project's `vcpkg.json` continues to pin the dependency baseline to Qt 6.8.3 / OCCT 7.9.1; tooling and library versions are independent.
 
 From PowerShell in the Solidara checkout, install vcpkg if the target directory does not already exist:

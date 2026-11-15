@@ -33,3 +33,7 @@ Current limits: 500 features, 256 named parameters, 512 characters per expressio
 `Viewport` owns an OCCT AIS context, V3d view, OpenGL driver and platform window binding (X11 on Linux; WNT on Windows). It renders native B-reps and manages selection separately from camera gestures. It does not modify document definitions. Selection is transient. An AIS orientation cube and trihedron provide navigation cues. Persistent UI layout uses local QSettings.
 
 All application resources are embedded. No Qt Network component or networking code is used. Offline tests block IPv4/IPv6 socket creation on Linux while exercising the application.
+
+## Windows IDE entry point
+
+The root `Solidara.sln`/`Solidara.vcxproj` pair is a maintained Makefile wrapper for Visual Studio 2026. Build commands run `scripts/build-windows.ps1`, which selects pinned dependency tooling and invokes the canonical CMake project in `build/visual-studio`. Debugger commands launch that build's configuration-specific executable. Generated inner project files and user settings remain ignored; only the portable outer entry point is tracked. C++ sources, libraries and runtime resources remain defined by CMake.
