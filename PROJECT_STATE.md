@@ -19,7 +19,7 @@ Sketches are analytically dimensioned profile templates with fixed geometry, not
 
 Missing: arbitrary planes, line/arc/spline sketch tools, general constraint solving, topological naming, revolve/sweep/loft, union/intersection tools, shell/chamfer, patterns/transforms, mesh/STEP import UI, configurable printer profiles, multi-document editing, autosave/recovery, light theme, drawings, CAM and simulation. Export/regeneration cancellation is absent. Viewport copy and tessellation still run on the GUI thread and can pause interaction on complex models.
 
-Windows build, runtime and portable packaging are configured but have not been executed in this Linux environment. Linux uses Qt's X11 platform and OCCT's native X11 window binding; a native Wayland viewport is unsupported. No source license has been selected.
+Windows build, runtime and portable packaging are configured but have not been executed in this Linux environment. VS 2022 uses `windows-release`; VS 2026 uses `windows-vs2026-release` and requires CMake 4.2+ plus the newer vcpkg tooling pin documented in the build guide. Preset parsing and the unchanged Linux configuration are validated locally; neither Windows compiler has been executed here. Linux uses Qt's X11 platform and OCCT's native X11 window binding; a native Wayland viewport is unsupported. No source license has been selected.
 
 ## Architecture and dependencies
 
@@ -43,11 +43,11 @@ Branch: `feature/parametric-modeling`. The base checkout originally contained on
 
 Implementation commit: `bdbe0eb` (`Add offline parametric CAD modeling workflow`). Both author and committer match the required identity.
 
-GitHub read access through the existing Git proxy was verified. The actual push of `feature/parametric-modeling` was rejected with HTTP 403: permission to ZuruiKyoku/Solidara.git denied. GitHub API access also returns Forbidden, so no pull request was created and remote CI was not triggered. The implementation and delivery documentation are committed locally; no default branch or remote history was changed.
+The initial GitHub push was rejected with HTTP 403. After the connection was updated, commit `551fc26` was successfully pushed to `feature/parametric-modeling` and its remote SHA verified. GitHub API access still returned Forbidden when checking Actions, so remote CI results and PR creation remain unverified. No default branch or existing remote history was overwritten.
 
 A Git bundle is provided outside the checkout at `/workspace/Solidara-delivery.bundle` for transfer. With appropriate GitHub write access, push `feature/parametric-modeling` and open a PR against main. Review the Windows CI results before claiming a Windows release.
 
-The cloud environment draft has saved installation and startup instructions. Publication is a separate user action. A restored future task has not been verified, and local-only commit restoration through environment snapshots is not guaranteed; retain the Git bundle or push the branch before relying on snapshot restoration.
+The cloud environment draft has saved installation and startup instructions. Publication is a separate user action. After publication, the restored checkout was verified to retain the branch and implementation commits. Future snapshots should still be checked; retain a Git bundle or push work before relying on restoration.
 
 ## Next development priorities
 
