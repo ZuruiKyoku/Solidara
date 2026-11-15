@@ -13,6 +13,8 @@ The repository owner has not selected a project source license. This document re
 
 The Windows baseline is `ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0` (vcpkg tag `2025.06.13`). The manifest explicitly enables Qt Widgets, Concurrent, OpenGL, thread support, Test, and the Windows deployment tool. It avoids unrelated SQL and web modules. `windeployqt` itself can depend on Qt Network; the application does not link a networking API or invoke an online service.
 
+For Visual Studio 2026, the build guide pins the vcpkg tooling checkout to `8f363bdc11359ede4bc51e5eb32a2617538049c8`, which bootstraps tool release `2026-10-29` with VS 2026/v145 detection. This does not replace the manifest's library baseline. VS 2022 CI continues to use its existing tooling pin.
+
 Transitive dependency versions and exact license texts are provided by the resolved package manager. Windows packaging includes every installed vcpkg package's `share/<package>/copyright` file under `licenses/`. This notice collection is useful evidence, not a substitute for satisfying full redistribution obligations or reviewing the release artifact. Keep modified library source and relinking information available where required.
 
 The UI uses installed system fonts. No downloaded font binaries or external font services are required. Solidara's cube artwork is original to the product brief; no Autodesk assets are used.

@@ -34,6 +34,45 @@ For a virtual software-rendered display, install `xvfb xauth libgl1-mesa-dri fon
 
 ## Windows 10/11 x64
 
+Choose the preset matching your installed Visual Studio version. Both require **Desktop development with C++**, an x64 MSVC compiler, a Windows SDK and Git. Setting `VCPKG_ROOT` only selects an existing vcpkg installation; it does not install vcpkg.
+
+### Visual Studio 2026
+
+Use CMake **4.2 or newer**; this is the first version with the `Visual Studio 18 2026` generator. The `windows-vs2026-release` preset uses a separate build directory from VS 2022. The commands below install a pinned vcpkg checkout whose 2026-10-29 tool release recognizes VS 2026 and its v145 toolset. The project's `vcpkg.json` continues to pin the dependency baseline to Qt 6.8.3 / OCCT 7.9.1; tooling and library versions are independent.
+
+From PowerShell in the Solidara checkout, install vcpkg if the target directory does not already exist:
+
+```powershell
+New-Item -ItemType Directory -Force C:/dev | Out-Null
+git clone https://github.com/microsoft/vcpkg.git C:/dev/solidara-vcpkg
+```
+
+If this dedicated vcpkg checkout already exists, reuse it. Run the following commands one at a time and stop if one fails. Keep any local changes in that checkout before switching its revision; do not force the checkout.
+
+```powershell
+git -C C:/dev/solidara-vcpkg fetch origin
+git -C C:/dev/solidara-vcpkg checkout 8f363bdc11359ede4bc51e5eb32a2617538049c8
+& C:/dev/solidara-vcpkg/bootstrap-vcpkg.bat -disableMetrics
+$env:VCPKG_ROOT = 'C:/dev/solidara-vcpkg'
+Test-Path "$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+cmake --preset windows-vs2026-release
+cmake --build --preset windows-vs2026-release
+ctest --preset windows-vs2026-release
+./build/windows-vs2026-release/Release/Solidara.exe
+```
+
+`Test-Path` must report `True`. If it reports `False`, correct `VCPKG_ROOT` or finish installing vcpkg before configuring. To work in the IDE, run `cmake --open build/windows-vs2026-release` after configuration succeeds. Select Release/x64, set the Solidara executable as the startup project, and use Ctrl+F5. CMake may generate `.slnx` instead of `.sln` with recent VS 2026 toolsets, so `cmake --open` avoids assuming a solution extension.
+
+To package this configuration:
+
+```powershell
+cpack --config build/windows-vs2026-release/CPackConfig.cmake -C Release -B build/packages
+```
+
+The preset and upstream tool support have been checked on Linux; actual compilation and execution with VS 2026 remain unverified. The existing Windows CI job uses VS 2022.
+
+### Visual Studio 2022
+
 Install Visual Studio 2022 with **Desktop development with C++**, a Windows SDK, Git, and CMake 3.24+. Run these commands in PowerShell from the repository:
 
 ```powershell

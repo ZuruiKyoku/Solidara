@@ -27,6 +27,13 @@
         "VCPKG_TARGET_TRIPLET": "x64-windows",
         "BUILD_TESTING": "ON"
       }
+    },
+    {
+      "name": "windows-vs2026-release",
+      "displayName": "Windows x64 / Visual Studio 2026 / vcpkg (CMake 4.2+)",
+      "inherits": "windows-release",
+      "generator": "Visual Studio 18 2026",
+      "binaryDir": "${sourceDir}/build/windows-vs2026-release"
     }
   ],
   "buildPresets": [
@@ -38,6 +45,12 @@
     {
       "name": "windows-release",
       "configurePreset": "windows-release",
+      "configuration": "Release",
+      "jobs": 4
+    },
+    {
+      "name": "windows-vs2026-release",
+      "configurePreset": "windows-vs2026-release",
       "configuration": "Release",
       "jobs": 4
     }
@@ -53,6 +66,14 @@
     {
       "name": "windows-release",
       "configurePreset": "windows-release",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "windows-vs2026-release",
+      "configurePreset": "windows-vs2026-release",
       "configuration": "Release",
       "output": {
         "outputOnFailure": true
