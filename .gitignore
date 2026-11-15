@@ -1,0 +1,8 @@
+/build*/
+/.cache/
+*.user
+*.solidara
+*.stl
+*.step
+!tests/fixtures/*
+!examples/*.solidara

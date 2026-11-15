@@ -1,0 +1,28 @@
+/* Solidara design tokens: background #15191E, viewport #1C2329, panel #242C33,
+   control #303942, border #3B454D, copper #D48D4B, selection #53BFC2. */
+QWidget { background: #242C33; color: #E8EAE8; font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 12px; }
+QMainWindow, QStatusBar { background: #15191E; }
+QMenuBar, QToolBar { background: #15191E; border: 0; spacing: 4px; padding: 4px; }
+QMenuBar::item:selected, QMenu::item:selected { background: #303942; }
+QToolButton { padding: 7px 10px; border: 1px solid transparent; border-radius: 3px; }
+QToolButton:hover, QPushButton:hover { background: #3B454D; border-color: #D48D4B; }
+QToolButton:pressed, QPushButton:pressed { background: #B87136; }
+QToolButton:checked { border-color: #D48D4B; color: #D48D4B; }
+QPushButton { background: #303942; border: 1px solid #3B454D; border-radius: 3px; padding: 7px 12px; }
+QPushButton#primary { background: #D48D4B; color: #15191E; font-weight: bold; }
+QLineEdit, QDoubleSpinBox, QComboBox, QTableWidget { background: #1C2329; border: 1px solid #3B454D; border-radius: 3px; padding: 5px; selection-background-color: #45A7A0; }
+QLineEdit { font-family: 'JetBrains Mono', 'Consolas', monospace; }
+QLineEdit:focus, QDoubleSpinBox:focus { border-color: #D48D4B; }
+QDockWidget::title { background: #15191E; color: #A8B3B9; padding: 8px; }
+QTreeWidget, QListWidget { background: #242C33; border: none; outline: none; }
+QTreeWidget::item { padding: 5px; }
+QTreeWidget::item:selected, QListWidget::item:selected { background: #303942; color: #53BFC2; }
+QListWidget::item { border: 1px solid #3B454D; border-radius: 3px; padding: 8px; margin: 4px; }
+QLabel#muted { color: #A8B3B9; }
+QLabel#brand { color: #D48D4B; font-size: 18px; font-weight: bold; padding: 6px 16px; }
+QLabel#heading { color: #D48D4B; font-weight: bold; padding: 8px 0; }
+QToolTip { background: #303942; color: #E8EAE8; border: 1px solid #D48D4B; padding: 8px; }
+QWidget:disabled { color: #78868E; }
+QSplitter::handle { background: #3B454D; }
+QScrollBar:vertical { width: 10px; background: #1C2329; }
+QScrollBar::handle:vertical { background: #3B454D; min-height: 24px; }
