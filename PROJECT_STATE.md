@@ -55,6 +55,12 @@ The user's next Windows build log confirmed that partial-clone migration and his
 
 Validation: the pinned vcpkg tool reproduced the original manifest failure and resolved the corrected manifest into 20 Windows packages, including Qt 6.8.3#2 and OCCT 7.9.1. This was a dependency-plan-only dry run on Linux using an external overlay that preserves the Windows target settings while disabling Visual Studio environment/compiler detection. It did not compile or install Windows packages. Linux configure/build succeeded and all 5 CTest suites passed. Windows compilation and Debug deployment still require native validation.
 
+### Short Windows dependency build paths
+
+The user's subsequent build detected VS 2026/MSVC 14.51 and reached OCCT compilation. Two generated object paths were 260 and 261 characters long and failed with C1083 (`Cannot open compiler generated file: '': Invalid argument`), while nearby 258/259-character paths compiled. The launcher now passes `%LOCALAPPDATA%/Solidara/b` as vcpkg's buildtrees root, reducing those two paths to 198 and 199 characters for the reported profile. The managed checkout, downloads, installed dependencies and binary cache stay in place. Existing shared-tool locking covers the shorter build directory; Clean still does not initialize dependencies. Unfinished dependency compilation restarts in the shorter location, and old buildtrees are preserved.
+
+Validation on Linux: all 15 PowerShell helper checks passed (one Windows-only Clean case skipped), and all 7 real-Git regression cases passed. A real CMake/vcpkg fixture verified `VCPKG_INSTALL_OPTIONS` routes versioned port extraction into a buildtrees path containing spaces while keeping the tool and installed roots separate; its compiler probe also passed without a second dependency installation. This was a dependency dry run and native Linux compiler probe, not Windows dependency compilation. The user must still verify the Windows build after updating.
+
 ## Development and delivery
 
 The initial implementation was delivered on `feature/parametric-modeling` and merged into `main` through PRs #1 and #2. The checked-in Visual Studio solution is being delivered on `main` at the user's explicit request. The base checkout originally contained only README.md. Commits use repository-local identity ZuruiKyoku <30306568+ZuruiKyoku@users.noreply.github.com>. Build outputs and dependency archives are excluded from Git.

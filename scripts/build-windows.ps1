@@ -113,9 +113,14 @@ function Invoke-SolidaraBuild {
         $toolsLock = [IO.File]::Open((Join-Path $toolsDirectory '.setup.lock'), 'OpenOrCreate', 'ReadWrite', 'None')
         $env:VCPKG_ROOT = Initialize-Vcpkg $toolsDirectory
         $env:VCPKG_DISABLE_METRICS = '1'
+        # OCCT's generated object names exceed MSVC's path limit under the pinned tool directory.
+        # Keep temporary dependency builds short without moving downloads or installed packages.
+        $buildtreesDirectory = (Join-Path $env:LOCALAPPDATA 'Solidara/b').Replace('\', '/')
+        New-Item -ItemType Directory -Force -Path $buildtreesDirectory | Out-Null
         $configureArguments = @('-S', $repository, '-B', $buildDirectory,
             '-G', 'Visual Studio 18 2026', '-A', 'x64',
             "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake",
+            "-DVCPKG_INSTALL_OPTIONS=--x-buildtrees-root=$buildtreesDirectory",
             '-DVCPKG_TARGET_TRIPLET=x64-windows', '-DBUILD_TESTING=ON')
         if ($StudioRoot) {
             $instance = [IO.Path]::GetFullPath($StudioRoot).TrimEnd([IO.Path]::DirectorySeparatorChar)
