@@ -36,6 +36,27 @@ function Find-CMake {
     throw 'CMake 4.2 or newer is required for Visual Studio 2026. Install C++ CMake tools through Visual Studio Installer, or install CMake and restart Visual Studio.'
 }
 
+function Complete-VcpkgClone {
+    param([string] $GitExecutable, [string] $Root)
+    $promisor = & $GitExecutable -C $Root config --bool --get remote.origin.promisor
+    $configExit = $LASTEXITCODE
+    if ($configExit -ne 0 -and $configExit -ne 1) { throw 'Cannot inspect the dependency checkout configuration.' }
+    if ($promisor -ne 'true') { return }
+
+    Write-Host 'Completing the existing dependency checkout before vcpkg starts. This one-time download includes historical port files...'
+    # vcpkg extracts versioned ports with an isolated Git environment on Windows.
+    # All historical blobs must already be local; lazy fetching there can lose DNS/proxy settings.
+    Invoke-Checked $GitExecutable @('-C', $Root, 'fetch', '--refetch', '--no-filter', 'origin')
+    $missingObjects = @(& $GitExecutable -C $Root rev-list --objects --all --missing=print |
+        Where-Object { $_.StartsWith('?') })
+    if ($LASTEXITCODE -ne 0 -or $missingObjects.Count -ne 0) {
+        throw 'Dependency history is still incomplete. Check Git connectivity and retry Build; the existing checkout has been preserved.'
+    }
+    & $GitExecutable -C $Root config --local --unset-all remote.origin.partialclonefilter | Out-Host
+    if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 5) { throw 'Cannot remove the dependency checkout download filter.' }
+    Invoke-Checked $GitExecutable @('-C', $Root, 'config', '--local', 'remote.origin.promisor', 'false')
+}
+
 function Initialize-Vcpkg {
     param([string] $ToolsDirectory)
     $revision = '8f363bdc11359ede4bc51e5eb32a2617538049c8'
@@ -44,8 +65,8 @@ function Initialize-Vcpkg {
     if (-not $git) { throw 'Git for Windows is required for dependency setup. Install Git, then restart Visual Studio.' }
     if (-not (Test-Path -LiteralPath $root)) {
         Write-Host 'Preparing the pinned Solidara dependency tools (first build requires internet access)...'
-        # A partial clone limits the download; versioned ports can fetch older trees on demand.
-        Invoke-Checked $git.Source @('clone', '--filter=blob:none', 'https://github.com/microsoft/vcpkg.git', $root)
+        # Versioned ports need historical file contents locally during extraction.
+        Invoke-Checked $git.Source @('clone', 'https://github.com/microsoft/vcpkg.git', $root)
     }
     if (-not (Test-Path -LiteralPath (Join-Path $root '.git'))) {
         throw "The managed tool directory is not a Git checkout: $root. Move it aside before retrying."
@@ -53,6 +74,7 @@ function Initialize-Vcpkg {
     $status = & $git.Source -C $root status --porcelain
     if ($LASTEXITCODE -ne 0) { throw "Cannot inspect the managed vcpkg checkout: $root" }
     if ($status) { throw "The managed vcpkg checkout has local changes: $root. Preserve them before retrying; setup will not overwrite them." }
+    Complete-VcpkgClone $git.Source $root
     Invoke-Checked $git.Source @('-C', $root, 'checkout', '--detach', $revision)
     $toolchain = Join-Path $root 'scripts/buildsystems/vcpkg.cmake'
     if (-not (Test-Path -LiteralPath $toolchain -PathType Leaf)) { throw "Missing vcpkg toolchain: $toolchain" }

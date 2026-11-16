@@ -43,6 +43,12 @@ GUI smoke: rectangle100×60 → extrusion20 → circular hole → all-edge fille
 
 Validation: the solution/project XML, project identity, source paths and configuration mappings were checked; PowerShell 7.5.4 on Linux passed 15 build-helper cases with one Windows-only Clean case explicitly skipped. The script uses Windows PowerShell 5.1-compatible syntax, with those checks added to Windows CI. The existing application rebuilt successfully and all 5 CTest suites passed. Windows SDK/MSVC execution and IDE F5 behavior cannot be verified on this Linux machine. Follow the Windows CI results and local Build Output rather than treating script checks as a successful Windows application build.
 
+### Partial dependency checkout repair
+
+A reported Windows build failure showed `checkout-index` attempting to fetch missing promised Git blobs, followed by `Could not resolve host: github.com`, while an ordinary DNS lookup succeeded. Upstream vcpkg-tool `2026-10-29` extracts port files with a Windows child environment containing only `GIT_INDEX_FILE`. Solidara's original partial-clone optimization exposed this path to deferred network requests.
+
+The helper now creates complete clones and migrates older partial clones in place using `git fetch --refetch --no-filter origin`. It checks historical object availability before clearing the partial-clone settings, preserves the working tree and caches, and propagates fetch errors. This avoids network access during historical port extraction; initial source/package downloads still require connectivity. Validation on Linux/PowerShell 7.5.4: all 15 existing helper checks passed (one Windows-only Clean case skipped), and 7 real-Git regression cases passed. The regression reproduces failed historical checkout with an unavailable promisor remote, verifies failed migration preserves settings and local edits, then verifies all six historical port trees extract without connectivity after migration. Actual Windows compilation remains unverified here.
+
 ## Development and delivery
 
 The initial implementation was delivered on `feature/parametric-modeling` and merged into `main` through PRs #1 and #2. The checked-in Visual Studio solution is being delivered on `main` at the user's explicit request. The base checkout originally contained only README.md. Commits use repository-local identity ZuruiKyoku <30306568+ZuruiKyoku@users.noreply.github.com>. Build outputs and dependency archives are excluded from Git.
