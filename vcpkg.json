@@ -6,7 +6,14 @@
     {
       "name": "qtbase",
       "default-features": false,
-      "features": ["widgets", "concurrent", "testlib", "opengl", "thread", "windeployqt"]
+      "features": [
+        "widgets",
+        "concurrent",
+        "testlib",
+        "opengl",
+        "thread",
+        "png"
+      ]
     },
     "opencascade"
   ]

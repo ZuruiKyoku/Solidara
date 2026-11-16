@@ -11,7 +11,7 @@ The repository owner has not selected a project source license. This document re
 | OpenGL and platform libraries | Operating system | Native graphics context and window integration | Platform/driver dependent; Windows OpenGL system components are not packaged. |
 | CMake, Ninja, compiler | Build-time only | Build and packaging | Not runtime dependencies; preserve notices if redistributing tools. |
 
-The Windows baseline is `ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0` (vcpkg tag `2025.06.13`). The manifest explicitly enables Qt Widgets, Concurrent, OpenGL, thread support, Test, and the Windows deployment tool. It avoids unrelated SQL and web modules. `windeployqt` itself can depend on Qt Network; the application does not link a networking API or invoke an online service.
+The Windows baseline is `ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0` (vcpkg tag `2025.06.13`). The manifest explicitly enables Qt Widgets, Concurrent, OpenGL, thread support, Test, and PNG support for the bundled icon and screenshots. Qt 6.8.3 automatically builds `windeployqt` on Windows; it is not a selectable feature in this pinned vcpkg port. Its upstream target links Qt Core, so Qt Network is not needed for this version. The post-build command uses Qt's configuration-aware imported deployment tool, which selects vcpkg's Debug wrapper when appropriate. The application does not link a networking API or invoke an online service.
 
 For Visual Studio 2026, the build guide pins the vcpkg tooling checkout to `8f363bdc11359ede4bc51e5eb32a2617538049c8`, which bootstraps tool release `2026-10-29` with VS 2026/v145 detection. This does not replace the manifest's library baseline. VS 2022 CI continues to use its existing tooling pin.
 

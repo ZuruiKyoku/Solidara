@@ -50,7 +50,7 @@ jobs:
         shell: pwsh
         run: |
           $root = Join-Path $env:RUNNER_TEMP 'solidara-vcpkg'
-          git clone --filter=blob:none https://github.com/microsoft/vcpkg.git $root
+          git clone https://github.com/microsoft/vcpkg.git $root
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           git -C $root checkout ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0
           if ($LASTEXITCODE) { exit $LASTEXITCODE }

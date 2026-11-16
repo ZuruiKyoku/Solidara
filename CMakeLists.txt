@@ -102,8 +102,13 @@ if(WIN32)
     endforeach()
     find_program(SOLIDARA_WINDEPLOYQT NAMES windeployqt windeployqt6
         HINTS ${qt_tools_dirs} REQUIRED)
+    set(solidara_deploy_tool "${SOLIDARA_WINDEPLOYQT}")
+    if(TARGET Qt6::windeployqt)
+        # vcpkg maps Debug to a wrapper using the Debug Qt paths and plugins.
+        set(solidara_deploy_tool "$<TARGET_FILE:Qt6::windeployqt>")
+    endif()
     add_custom_command(TARGET Solidara POST_BUILD
-        COMMAND "${SOLIDARA_WINDEPLOYQT}" --$<IF:$<CONFIG:Debug>,debug,release>
+        COMMAND "${solidara_deploy_tool}" --$<IF:$<CONFIG:Debug>,debug,release>
             --no-translations --no-system-d3d-compiler --no-opengl-sw
             "$<TARGET_FILE:Solidara>"
         COMMENT "Deploy Qt platform plugins for local execution"
